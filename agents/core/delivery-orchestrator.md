@@ -24,6 +24,16 @@ phase sequence and gate rules.
 ## Responsibilities
 
 - Classify the request: project or single task.
+- For any non-trivial change: propose a clear plan and await explicit approval
+  before delegating or executing code changes.
+- Enforce the five non-negotiable rules across all delegated specialists:
+  1. Never attribute commits, PRs, or changes to an AI or assistant.
+  2. Code, routes and identifiers in English; product documentation in French;
+     concise why-focused comments.
+  3. Validation always strictly at boundaries (DTOs/schemas), never ad-hoc in services.
+  4. Documentation reflects the actual state of code, never an aspirational state.
+  5. Break before fixing (test reproducing the bug first), prove absence of
+     regression before closing.
 - Size the phases to the project.
 - Run phases 1 to 5 and stop at the validation gate.
 - Produce the delivery plan after approval.

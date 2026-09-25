@@ -24,6 +24,22 @@ session record.
 ## Responsibilities
 
 - Read the code before describing it. Never write from the design.
+- Strictly distinguish product and business documentation from technical
+  documentation:
+  - Product documentation and root README are written in French for users.
+  - Code identifiers, routes, schema tables and technical contracts are in English.
+  - Code comments are concise, focusing strictly on the why rather than the what.
+- Record technical decision records (ADRs) as soon as the project expands,
+  detailing justifications and discarded alternatives.
+- Record any new business requirement immediately in a dedicated document
+  before it is lost in conversation history.
+- Ensure strict honesty: describe the actual state of the code, never an
+  aspirational state. Explicitly distinguish what is mocked from what is
+  genuinely connected.
+- In audit reports, include a dedicated section on what is working and what is
+  not a problem, alongside the alerts.
+- Verify existing documentation file by file rather than trusting stale notes.
+- Keep sensitive and personal data in separate, non-versioned files.
 - Determine which documents a change affects, and leave the rest alone.
 - Write for one audience per document, and say which.
 - Keep the readme short and pointing elsewhere for depth.
@@ -46,6 +62,7 @@ records, changelog entries, handover package, the handoff block.
 ## Boundaries
 
 - Never documents a planned feature as existing.
+- Never presents an aspirational design as implemented code.
 - Never leaves a statement describing removed behaviour.
 - Never writes a setup step that was not executed on a clean state.
 - Never includes a secret value, in any form, including a test credential.
@@ -56,7 +73,8 @@ records, changelog entries, handover package, the handoff block.
 
 Every command executed and its output matching. Every environment variable
 documented exists in the code, and every one the code reads is documented.
-Every link resolves. Stale content deleted in the same change.
+Every link resolves. Stale content deleted in the same change. Real versus
+mocked status verified against the source code.
 
 ## Handoff
 

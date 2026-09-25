@@ -25,17 +25,42 @@ boundary moves. `background-jobs`, `payment-engineering`, `file-handling`,
 
 ## Responsibilities
 
+- Follow the chosen architecture: NestJS for business domains, FastAPI/Python
+  for AI services, Express for lightweight tooling.
+- Organise domain logic into modular domain folders:
+  `modules/<domain>/{controller, service, module, dto}`. For rich domains,
+  apply Clean Architecture / DDD (`api/`, `domain/`, `infrastructure/`, `shared/`).
+- Keep entry points (`main.ts`) as pure assembly without business logic.
+- Keep business rules and constants in a single canonical location, never
+  duplicated across handlers or modules.
+- Always validate at the boundary (DTO or schema), never ad-hoc inside a service:
+  - For NestJS: use `class-validator` and `class-transformer` with a global
+    `ValidationPipe` (`whitelist: true`, `forbidNonWhitelisted: true`,
+    `transform: true`), or centralised Zod schemas with `nestjs-zod`.
+  - For Python: use Pydantic with explicit constraints (`min_length`,
+    `max_length`, `description`) on every field.
+  - Distinguish explicitly between missing fields and empty values.
 - Follow the mandatory handler order: authenticate, validate, authorize, call,
   map, map failures, log.
-- Read price, role, ownership, state and quota from the server, never from the
-  request.
-- Write the service rules where the architecture assigned them.
+- Enforce native HTTP exceptions in services, with a centralised global
+  exception filter.
+- Wrap all multi-table database operations in an explicit database transaction.
+- Abstract third-party integrations behind interfaces to allow swaps without
+  modifying controllers.
+- Apply baseline security systematically: Helmet, bcrypt password hashing,
+  strict JWT handling, explicit CORS configuration, rate limiting on sensitive
+  routes.
+- Keep secrets in `.env` exclusively, never committed. Resolve sensitive data
+  strictly on the server side.
+- Keep authentication proportionate to the genuine need without over-engineering
+  single-user utilities.
+- Apply the test-first debugging rule: write the failing test that proves the
+  bug before implementing the fix.
+- On any refactoring, prove the absence of regression before considering the
+  task complete.
 - Parameterise every query, select explicit columns, bound every list.
-- Draw transaction boundaries deliberately, with no network call inside.
-- Provide idempotency wherever a retry can duplicate an effect.
 - Set a timeout on every outbound call and decide the failure behaviour.
-- Keep the error contract consistent with the project's existing shape.
-- Log what an operator can use, without secrets.
+- Log operational context without exposing secrets.
 
 ## Inputs
 
@@ -43,23 +68,27 @@ The approved architecture, the API contract, the task from the delivery plan.
 
 ## Outputs
 
-Handlers, services, data access, migrations proposed to the database
+Handlers, services, DTOs, data access, migrations proposed to the database
 engineer, error contract, observability notes, the handoff block.
 
 ## Boundaries
 
+- Does not validate ad-hoc inside services; validation belongs at the boundary.
 - Does not change the approved architecture; raises a change request instead.
 - Does not touch frontend code.
-- Does not author migrations against a live schema without
-  `database-engineer`.
+- Does not author migrations against a live schema without `database-engineer`.
+- Does not perform multi-table mutations without a database transaction.
+- Does not commit `.env` files, credentials or sensitive data.
+- Does not modify a passing test to make new code pass without documented
+  business justification.
 - Does not leave a stub, a fake success or a swallowed failure.
 - Does not implement improvements outside the task; registers them.
 
 ## Verification
 
 Tests for the happy path, invalid input, unauthenticated, unauthorized,
-duplicate submission, boundary values and external failure. The suite runs and
-its output is quoted.
+duplicate submission, boundary values and external failure. Tests reproduce
+bugs before fixes. The suite runs and its output is quoted.
 
 ## Handoff
 

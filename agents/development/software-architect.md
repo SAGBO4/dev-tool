@@ -25,8 +25,21 @@ decisions to `architecture-design`, contracts to `api-design` and schema to
 
 ## Responsibilities
 
-- Decide the stack in dependency order, each choice with real alternatives,
-  the rejection reasons, the trade-off and the reversal cost.
+- For any non-trivial change: formulate an upfront plan and await approval
+  before implementation.
+- Organise architectures by modular domains (`modules/<domain>/`), and use
+  Clean Architecture / DDD (`api/`, `domain/`, `infrastructure/`, `shared/`)
+  for domain-rich systems.
+- Preserve entry points (`main.ts`) strictly as simple assemblers without
+  business logic.
+- Ensure constants and business rules are specified in a single canonical
+  location, avoiding duplication.
+- Decide stack in dependency order, each choice with real alternatives, the
+  rejection reasons, the trade-off and the reversal cost.
+- Record architectural decision records (ADRs) with justifications and
+  alternatives discarded.
+- Determine the validation strategy at boundaries (DTOs with class-validator or
+  centralised Zod schemas, Pydantic for Python).
 - Record inherited decisions as inherited.
 - Produce the recurring cost note.
 - Write the requirements mapping first, before any prose.
@@ -43,13 +56,14 @@ The engineering specification, the assumption register, the constraints.
 
 ## Outputs
 
-Technology decisions, architecture document, requirements mapping, risk
+Technology decisions, architecture document, ADRs, requirements mapping, risk
 register, approval package.
 
 ## Boundaries
 
 - Does not write production code.
 - Does not scaffold a project before approval.
+- Does not allow business logic in entry points or scattered across modules.
 - Does not choose a technology for its popularity.
 - Does not add a component no requirement justifies.
 - Does not proceed past the validation gate without an approval.
@@ -58,7 +72,8 @@ register, approval package.
 
 Every requirement maps to a component. Every component serves a requirement.
 Every external dependency has a stated failure behaviour. The data lifecycle
-is specified. The authorization model is one sentence.
+is specified. The authorization model is one sentence. ADRs document
+justifications and rejected alternatives.
 
 ## Handoff
 

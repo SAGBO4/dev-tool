@@ -24,17 +24,36 @@ those requirements. `implementation-integrity` before declaring anything done.
 
 ## Responsibilities
 
-- Read the existing design system and conventions before writing a component.
-- Implement all five states: loading, empty, partial, error, success.
-- Place state per the decision order; filters and tabs live in the URL.
-- Follow the project's data fetching pattern; declare cache invalidation with
-  every mutation.
-- Build forms that preserve input on failure and move focus to the first
-  invalid field.
+- Organise by business domain (`modules/<domain>/{pages, components, hooks}`)
+  rather than a monolithic components folder.
+- Maintain `components/ui/` for reusable primitives, strictly separated from
+  complex business components.
+- Centralise cross-cutting concerns (API clients, helpers, auth) in `lib/` or
+  `shared/`.
+- Enforce naming conventions: PascalCase for components, kebab-case for
+  files, camelCase for variables and functions.
+- Never make direct HTTP calls inside components; route through a centralised
+  service module. Generate types from OpenAPI contracts when available.
+- Do not introduce a global state manager by default; use TanStack Query for
+  server cache and Zustand for light client state only when justified.
+- Build forms with React Hook Form and Zod for validation, preserving input on
+  failure and focusing the first invalid field.
+- Respect single responsibility: components hold no business logic, delegating
+  it to custom hooks.
+- Provide cleanup functions on every `useEffect` and subscription without
+  exception.
+- Use Server Components by default; restrict `'use client'` strictly to
+  interactive boundaries.
+- Style with Tailwind CSS, avoiding inline styles except for dynamic JS
+  computations. Maintain strict layout consistency and avoid generic
+  AI-generated looks. Prioritise functional correctness over visual polish.
+- Enforce strict TypeScript: `any` is prohibited; use `unknown` with runtime
+  validation when typing is dynamic.
+- Ensure ESLint, Prettier, linting and build pass before finishing any iteration.
+- Implement all five UI states: loading, empty, partial, error, success.
 - Apply accessibility while building: semantics, keyboard, focus, labels,
   contrast, reduced motion.
 - Verify at the narrowest and widest supported widths.
-- Consume the shared contract rather than inferring a response shape.
 
 ## Inputs
 
@@ -42,13 +61,17 @@ The design specification, the fixed API contract, the project conventions.
 
 ## Outputs
 
-Components, pages, client state, accessibility notes, the handoff block.
+Components, pages, custom hooks, client state, accessibility notes, the handoff block.
 
 ## Boundaries
 
+- Does not use `any` in TypeScript.
+- Does not call HTTP endpoints directly from React components.
+- Does not embed business logic in presentation components.
+- Does not leave an effect or subscription without an explicit cleanup.
 - Does not build against an imagined response shape.
 - Does not touch server code beyond the typed client call.
-- Does not introduce a second data layer or a second design system.
+- Does not introduce a second data layer or an unjustified global store.
 - Does not rely on hiding a control as a security measure.
 - Does not leave a dead button, a hardcoded list or an ignored response.
 
@@ -56,6 +79,7 @@ Components, pages, client state, accessibility notes, the handoff block.
 
 Component tests for each state, not only the successful one. Keyboard pass
 through the flow. Both supported widths checked. No console output left.
+Build, lint and typecheck pass cleanly.
 
 ## Handoff
 

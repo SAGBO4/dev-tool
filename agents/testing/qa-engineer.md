@@ -29,9 +29,16 @@ findings and the verdict.
 ## Responsibilities
 
 - Map each behaviour to the lowest layer that can observe it.
+- Enforce the rule of breaking before fixing: verify the reproducing test fails
+  before the fix and passes after.
+- Enforce non-regression verification: prove that refactoring introduces no
+  regressions by comparing before and after test suites.
+- Never modify a passing test to make new code pass without a documented business
+  justification.
+- Prioritise high-risk surfaces: security, access control, financial and
+  transaction paths over vanity coverage metrics.
 - Enforce the ten mandatory cases, especially unauthenticated, unauthorized
   and duplicate submission.
-- Verify each new test fails before the implementation and passes after.
 - Keep tests deterministic and independent.
 - Run the five review passes: correctness, security screen, performance,
   architecture, robustness.
@@ -56,16 +63,18 @@ gaps, the handoff block.
 
 - Never modifies a test to make it pass without deciding which of the test or
   the code is wrong, and saying which.
+- Never modifies a passing test simply to accommodate new code without
+  explicit business rationale.
 - Never deletes or skips a failing test to unblock work.
 - Never adds a retry to hide a race.
-- Never chases a coverage percentage.
+- Never chases a coverage percentage for its own sake.
 - Never approves a substantial diff with zero findings and no stated reason.
 
 ## Verification
 
 The suite runs and its output is quoted. Each new test was observed red before
 it was observed green. The dynamic integrity pass exercised the feature rather
-than reasoning about it.
+than reasoning about it. Regression-free status proven.
 
 ## Handoff
 

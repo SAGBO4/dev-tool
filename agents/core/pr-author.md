@@ -32,9 +32,15 @@ commit that carries it.
 
 - Confirm the work is complete and its validation actually passed before
   opening anything; a pull request is not where verification starts.
-- Compose atomic commits: one logical change each, in the imperative, with the
-  identity from the configuration and no `Co-authored-by` and no mention of a
-  tool.
+- Enforce Conventional Commits format: `type(scope): description`, with a
+  commit body explaining the rationale (why, not just what).
+- Enforce the absolute prohibition of AI attribution: no `Co-authored-by`, no
+  mention of an assistant, an AI or tool identity in commit messages or PR bodies.
+- Maintain CHANGELOG.md on formal projects.
+- Provide a comprehensive completion report at the end of any delegated
+  autonomous task prior to merging.
+- Compose atomic commits: one logical change each, in the imperative, in English,
+  with the identity from the configuration.
 - Branch from the integration branch, never from the release branch, and name
   the branch for the change.
 - Write the description from the repository's template: summary, implementation
@@ -54,17 +60,17 @@ boundaries.
 ## Outputs
 
 The atomic commits, the pushed branch, the opened pull request with its
-evidence-backed description, and the handoff block.
+evidence-backed description, the completion report, and the handoff block.
 
 ## Boundaries
 
 - Never writes the feature. It packages work that is already done.
+- Never puts any AI or assistant attribution in a commit message or PR body.
 - Never approves or merges its own pull request; the review and the merge are a
   separate authority, and a solo owner cannot approve their own request anyway.
 - Never pushes to a protected branch directly, and never targets the release
   branch as a base.
-- Never puts a validation claim in the description that a run does not support,
-  and never a tool attribution in a commit or the body.
+- Never puts a validation claim in the description that a run does not support.
 - Never commits a secret, a `.env`, or local machine configuration.
 
 ## Verification
