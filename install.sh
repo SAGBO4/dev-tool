@@ -25,6 +25,7 @@
 #   bash install.sh --report       print a usage report from local session data
 #   bash install.sh --zip          also build one archive per skill in dist/
 #   bash install.sh --remove       uninstall the selected scope
+#   bash install.sh --antigravity  install for Google Antigravity CLI (~/.gemini/config)
 #   bash install.sh --help         this text
 #
 # Scope options combine, and combine with --zip and --remove:
@@ -56,8 +57,10 @@ set -u
 ROOT="$(cd "$(dirname "$0")" 2>/dev/null && pwd || printf '')"
 TARGET="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 AGENT_TARGET="${CLAUDE_AGENTS_DIR:-$HOME/.claude/agents}"
+RULES_TARGET="${ANTIGRAVITY_RULES_DIR:-$HOME/.gemini/config/rules}"
 CONFIG_FILE="${CLAUDE_CONFIG_FILE:-$HOME/.claude/craft.config.yaml}"
 REPO_URL="${CLAUDE_SUITE_REPO:-https://github.com/Handsomeboy990/craft-suite.git}"
+IS_ANTIGRAVITY="no"
 
 # The suite was called writer-suite until 3.0.0. An existing install keeps its
 # answers in the old filenames, so move them once rather than asking again.
@@ -137,6 +140,13 @@ while [ $# -gt 0 ]; do
       CC_ARGS="$CC_ARGS --port $1"
       ;;
     --json)      CC_ARGS="$CC_ARGS --json" ;;
+    --agy|--antigravity)
+      TARGET="${ANTIGRAVITY_SKILLS_DIR:-$HOME/.gemini/config/skills}"
+      AGENT_TARGET="${ANTIGRAVITY_AGENTS_DIR:-$HOME/.gemini/config/agents}"
+      RULES_TARGET="${ANTIGRAVITY_RULES_DIR:-$HOME/.gemini/config/rules}"
+      CONFIG_FILE="${ANTIGRAVITY_CONFIG_FILE:-$HOME/.gemini/config/craft.config.yaml}"
+      IS_ANTIGRAVITY="yes"
+      ;;
     --writing)     WANT_WRITING="yes";     SCOPE_GIVEN="yes" ;;
     --documents)   WANT_DOCUMENTS="yes";   SCOPE_GIVEN="yes" ;;
     --dev)         WANT_ENGINEERING="yes"; SCOPE_GIVEN="yes" ;;
@@ -1321,6 +1331,13 @@ if [ "$WITH_AGENTS" = "yes" ]; then
   done < <(agents)
   [ "$acount" -gt 0 ] \
     && printf '%s agents installed in %s\n' "$acount" "$AGENT_TARGET"
+  if [ "$IS_ANTIGRAVITY" = "yes" ]; then
+    mkdir -p "$RULES_TARGET"
+    python3 "$ROOT/bin/craft-subagents.py" --write-rule "$RULES_TARGET/craft-subagents.md" >/dev/null 2>&1 || true
+    python3 "$ROOT/bin/craft-subagents.py" --install-agents "$AGENT_TARGET" >/dev/null 2>&1 || true
+    printf 'Antigravity agent files installed at %s\n' "$AGENT_TARGET"
+    printf 'Antigravity subagents rule installed at %s/craft-subagents.md\n' "$RULES_TARGET"
+  fi
 fi
 
 if [ "$MODE" = "zip" ]; then

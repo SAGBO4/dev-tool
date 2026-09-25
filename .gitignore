@@ -55,6 +55,7 @@ CLAUDE.md
 .cursorrules
 .aider*
 .windsurfrules
+.agents/
 *.local
 
 # Secrets et informations d'identification, jamais versionnés.
